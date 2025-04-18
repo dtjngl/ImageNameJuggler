@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Google-Sheets-and-Drive-Image-Name-Juggler",
+  "version": "1.0",
+  "description": "Easily manage images in Google Sheets.",
+  "permissions": ["scripting", "activeTab", "storage"],
+  "host_permissions": [
+    "https://docs.google.com/spreadsheets/*",
+    "https://script.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

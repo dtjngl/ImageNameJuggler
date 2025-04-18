@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sheets Image Helper</title>
+    <style>
+        body { font-family: Arial, sans-serif; width: 300px; padding: 10px; }
+        button { width: 100%; padding: 10px; background-color: #4285F4; color: white; border: none; cursor: pointer; margin-bottom: 5px; }
+        #image-selection-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 5px; margin-top: 10px; }
+        .image-item { display: flex; flex-direction: column; align-items: center; border: 1px solid #ccc; padding: 5px; }
+        .image-item img { width: 80px; height: auto; }
+    </style>
+</head>
+<body>
+    <h3>Google Sheets Image Helper</h3>
+    <p>
+        <button id="renameAndUpdateImages">Run Image Name Update</button>
+    </p>
+    <p>
+        <button id="processSelectedDatasets">Run Image Name Update</button>
+    </p>
+    <p>
+        <button id="renameFilesBasedOnSheet">Run Image Name Update</button>
+    </p>
+    <div id="status" style="margin-top:10px; font-size: 12px;"></div>
+    <script src="popup.js"></script>
+</body>
+</html>

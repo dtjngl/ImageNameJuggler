@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .image-container { display: flex; flex-wrap: wrap; gap: 10px; width: 500px; }
+    .image-container label { display: flex; flex-direction: column; align-items: center; }
+    img { width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; cursor: pointer; }
+    button { margin: 5px; padding: 8px 12px; }
+    .top-buttons { position: sticky; top: 0; background: white; padding: 10px; border-bottom: 2px solid #ddd; }
+  </style>
+</head>
+<body>
+
+  <h3 id="dataset-title">Select Images for <?= han ?></h3>
+
+  <div class="top-buttons">
+    <button onclick="submitImageSelection()">Save</button>
+    <button onclick="skipDataset()">Skip</button>
+  </div>
+
+  <form id="image-form">
+    <div id="image-container">
+      <!-- Images and checkboxes will be injected by server-side Apps Script -->
+    </div>
+  </form>
+
+  <script>
+    function submitImageSelection(rowIndex) {
+      try {
+        const selectedImages = [];
+        document.querySelectorAll('input[name="images"]:checked').forEach(input => {
+          selectedImages.push(input.value);
+        });
+
+        google.script.run
+          .withSuccessHandler(updateDatasetWithoutReload)
+          .withFailureHandler(onFailure)
+          .saveSelectedImages(rowIndex, selectedImages);
+      } catch (error) {
+        console.log("Error in submitImageSelection: " + error.message);
+        google.script.run.logError(error.message);
+      }
+    }
+
+    function skipDataset(rowIndex) {
+      google.script.run
+        .withSuccessHandler(updateDatasetWithoutReload)
+        .processNextDataset(rowIndex);
+    }
+
+    function updateDatasetWithoutReload(updatedData) {
+      if (!updatedData) return;
+
+      document.getElementById("dataset-title").innerText = "Select Images for " + updatedData.han;
+
+      document.querySelectorAll('input[name="images"]').forEach(input => {
+        const imageName = input.value.toLowerCase();
+        const isSelected = updatedData.previousSelection.includes(imageName);
+        const isDisabled = updatedData.allSelectedImages.includes(imageName);
+
+        input.checked = isSelected;
+        input.disabled = isDisabled;
+        input.parentElement.style.opacity = isDisabled ? '0.4' : '1';
+      });
+
+      if (updatedData.allProcessed) {
+        google.script.host.close();
+      }
+    }
+
+    function onFailure(error) {
+      console.error("Error in Apps Script:", error.message);
+      alert("An error occurred: " + error.message);
+    }
+
+    // ✅ Add trigger handler for extension to call functions
+    window.handleTriggerFromExtension = function(action) {
+      if (action === "processSelectedDatasets") {
+        google.script.run.processSelectedDatasets();
+      }
+      // Add more commands if needed in the future
+    };
+
+    // ✅ Optional: set a flag so extension knows sidebar is ready
+    window.sidebarReady = true;
+  </script>
+
+</body>
+</html>
